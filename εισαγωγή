@@ -1,0 +1,100 @@
+https://docs.python.org/3/library/re.html
+http://www.regular-expressions.info/tutorialcnt.html
+
+Regular Expression (regex) είναι ένας τρόπος για να περιγράψουμε κάποιο τμήμα ενός κειμένου.
+Ο τρόπος που το κάνουμε είναι με τη δημιουργία patterns
+
+Για τα patterns χρησιμοποιούμαι διάφορα σύμβολα χαρακτήρες και έννοιες. Από εδώ και στο εξής θα
+χρησιμοποιήσω patterns που λειτουργούν σωστά με το module re στην python.
+Αναλόγως το pattern μπορεί με μικρές ή καθόλου αλλαγές να χρησιμοποιηθεί και σε άλλες γλώσσες.
+
+Στην πιό απλή μορφή του το pattern περιέχει μόνο εκτυπώσιμους απλούς(όχι special) χαρακτήρες π.χ
+mypattern=r'k33theod@gmail 34' 
+Το mypattern κάνει match, ταιριάζει δηλαδή, στην πρώτη ίδια ακολουθία που θα βρει στο κείμενο 
+
+Πως λειτουργεί:
+
+Έστω 
+text="Mpla Mpla lala k33theod@gmail 34 oops osp"  
+
+Όταν προσπαθήσω να βρω το mypattern στο text θα προσπαθεί να κάνει match το k 
+μόλις συναντήσει τον πρώτο χαρακτήρα k στο text θα αρχίσει να κάνει έλεγχο για τους επόμενους χαρακτήρες 
+εάν μέτα το k έρχεται το 3 θα συνεχίσει εάν όχι κάνει fail και ψάχνει το επόμενο k στο text 
+εφόσον όλοι οι χαρακτήρες του pattern ταιριάζουν με ένα κομμάτι του κειμένου
+θα μου επιστραφεί ενα match object που θα αντιστοιχεί στην 1η εύρεση του mypattern
+Εάν έχω δηλαδή την ακολουθία 'k33theod@gmail 34' περισότερες από μία φορές στο κείμενό μου, 
+το ψάξιμο θα σταματήσει και θα επιστραφεί το πρώτο match.
+Εάν δεν το βρει καθόλου επιστρέφει None
+
+Το πρόγραμμα σε python
+>>> import re
+>>> mypattern=r'k33theod@gmail 34'
+>>> text="Mpla Mpla lala k33theod@gmail 34 oops osp"
+>>> match_obj=re.search(mypattern, text)
+>>> match_obj
+<_sre.SRE_Match object; span=(15, 32), match='k33theod@gmail 34'>
+>>> text[15:32]
+'k33theod@gmail 34'
+
+**Για να μπορέσουμε να κάνουμε περισσότερα πράγματα με τα regex χρησιμοποιούνται
+ορισμένοι χαρακτήρες με ειδική χρήση. Αυτοί είναι
+special characters
+ the backslash \, the caret ^, the dollar sign $, the period or dot ., 
+ the vertical bar or pipe symbol |, the question mark ?, the asterisk or star *, 
+ the plus sign +, the opening parenthesis (, the closing parenthesis ), 
+ the opening square bracket [, and the opening curly brace {, 
+ These special characters are often called "metacharacters"
+
+Όταν θέλω να χρησιμοποιήσω έναν από τους παραπάνω χαρακτήρες στο pattern μου χωρίς 
+την ειδική του χρήση τον κάνω escape με backslash.
+Έστω ότι θέλω να βρώ την τελεία, το pattern είναι
+mypattern=r'\.' 
+και θα κάνει match την πρώτη τελεία στο κείμενό μου.
+
+Special characters
+
+'\'
+  Είτε κάνει escape special characters (permitting you to match characters like '*', '?', and so forth),
+  ή σηματοδοτεί special sequence
+
+  Επειδή η python χρησιμοποιεί επίσης το backslash ως ειδικό χαρακτήρα θα πρέπει κάθε φορά που κάνουμε
+  ένα pattern να χρησιμοποιούμαι raw string δηλαδή raw_pattern pattern=r'pattern'
+
+  Για την πρώτη χρήση του backslash είδαμε το παράδειγμα της . 
+  Δεύτερη χρήση signals special sequences με την ευκαιρία βλέπουμε και την χρήση του special char [
+  
+  Τα regex έχουν έτοιμες κάποιες ακολουθίες χαρακτήρων που χρησιοποιούνται συχνά για να μην
+  χρειάζεται κάθε φορά να τις δημιουργούμε εμείς
+  Mια ακολουθία χαρακτήρων δημιουργείται με αγγύλες πχ
+  [aeioue] αυτό κάνει match σε οποιοδήποτε χαρακτήρα περιέχει, έναν μόνο, δηλαδή 
+  αν το text είναι
+  text='kaeioue' και κάνουμε match θα κάνει μόνο τον χαρακτήρα a
+  Για να ορίσουμε συνέχόμενους χαρακτήρες χρησιμοποιούμε μεταξύ τους το -
+  [αβγδεζηθικ]  κάνει match οποιοδήποτε χαρακτήρα μεταξύ του α ελληνικό  και κ ελληνικό
+  και μπορεί να γραφεί [α-κ]
+  [0-9] κάνει match οποιοδήποτε αριθμό από το 0 εώς 9 προσοχή ένα μόνο ψηφίο όπως ξαναείπα
+  και είναι ίδιο με το [0123456789]
+  
+  σε αυτό το τελευταίο παράδειγμα έρχεται η ένοια του special sequence επειδή
+  το [0-9] έχει συχνή χρήση όταν κάνουμε match αριθμούς, έχουμε επίσης γι αυτό το 
+  special sequence \d προσοχή δεν είναι ακριβώς το ίδιο 
+  όμοια έχουμε το \w ίδιο με το [A-Za-z0-9_], πάλι δεν είναι ακριβώς το ίδιο 
+  το [A-Za-z0-9_] κάνει match μόνο ascii ενώ το \w οποιοδήποτε αντίστοιχο χαρακτήρα στο unicode 
+  πχ ελληνικά και άλλες γλώσσες  
+  Εάν κάνω στα ελληνικά την ακολουθία 
+  [α-ωΑ-Ω0-9_] δεν θα συμπεριλάβει το ά ενώ το \w θα το συμπεριλάβει
+
+Με βάση όσα είπαμε παραπάνω μια μικρή άσκηση 
+έχω ένα κείμενο που έχει ημερομηνία στη μορφή (23 Δεκ 2018 20:00)
+και θέλω να κάνω ένα pattern για να το βρώ 
+
+pattern_imerominias=r'[0-9][0-9] [α-ω,Α-Ω][α-ω,Α-Ω][α-ω,Α-Ω] [0-9][0-9][0-9][0-9] [0-9][0-9]:[0-9][0-9]' 
+το ίδιο με χρήση special sequences 
+pattern_imerominias=r'\d\d \w\w\w \d\d\d\d \d\d:\d\d'
+και ο κώδικας σε python
+>>> pattern_imerominias=r'\d\d \w\w\w \d\d\d\d \d\d:\d\d'
+>>> text= 'mapla mapla 16 ιου 2017 12:50 mpla'
+>>> find=re.search(pattern_imerominias, text)
+>>> find
+<_sre.SRE_Match object; span=(12, 29), match='16 ιου 2017 12:50'>
+>>> 
